@@ -1,0 +1,6 @@
+.profile_div img{
+    max-width: 40px;
+    border-radius: 50%;
+    border: 1px solid black;
+    height:45px
+}

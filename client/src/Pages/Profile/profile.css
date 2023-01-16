@@ -1,0 +1,6 @@
+.card-profile-stats img{
+    max-width: 56px;
+    border-radius: 50%;
+    border: 1px solid black;
+    margin-bottom: 20px;
+}
