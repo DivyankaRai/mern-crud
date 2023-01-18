@@ -4,8 +4,12 @@ import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import Dropdown from "react-bootstrap/Dropdown";
 import "./table.css"
+import { BASE_URL } from '../../Services/helper';
+import { NavLink } from 'react-router-dom';
 
-const Tables = () => {
+
+const Tables = ({userdata}) => {
+
   return (
     <>
       <div className="container mt-4">
@@ -25,90 +29,60 @@ const Tables = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Divii</td>
-                    <td>Email</td>
-                    <td>Female</td>
-                    <td>
-                    <Dropdown>
-                      <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                        Active
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item>
-                          Active
-                        </Dropdown.Item>
-                        <Dropdown.Item>
-                          Inactive
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                    </td>
-                    <td className='profile_div'>
-                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXSTblEVkkdJh15jlAbC3FpvuzCKb1o-pQQA&usqp=CAU" />
-                    </td>
-                    <td>
-                    <Dropdown>
-                      <Dropdown.Toggle className='action' id="dropdown-basic">
-                        Action
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item>
-                        <i class="fa-solid fa-pen-to-square"></i>&nbsp;Edit
-                        </Dropdown.Item>
-                        <Dropdown.Item>
-                        <i class="fa-solid fa-eye"></i>&nbsp;View
-                        </Dropdown.Item>
-                        <Dropdown.Item>
-                        <i class="fa-solid fa-trash"></i>&nbsp;Delete
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Divii</td>
-                    <td>Email</td>
-                    <td>Female</td>
-                    <td>
-                    <Dropdown>
-                      <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                        Active
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item>
-                          Active
-                        </Dropdown.Item>
-                        <Dropdown.Item>
-                          Inactive
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                    </td>
-                    <td className='profile_div'>
-                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXSTblEVkkdJh15jlAbC3FpvuzCKb1o-pQQA&usqp=CAU" />
-                    </td>
-                    <td>
-                    <Dropdown>
-                      <Dropdown.Toggle className='action' id="dropdown-basic">
-                        Action
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item>
-                        <i class="fa-solid fa-pen-to-square"></i>&nbsp;Edit
-                        </Dropdown.Item>
-                        <Dropdown.Item>
-                        <i class="fa-solid fa-eye"></i>&nbsp;View
-                        </Dropdown.Item>
-                        <Dropdown.Item>
-                        <i class="fa-solid fa-trash"></i>&nbsp;Delete
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                    </td>
-                  </tr>
+                  {
+                    userdata.length > 0 ? userdata.map((e,i)=>{
+                      return(
+                        <>
+                          <tr>
+                            <td>{i+1}</td>
+                            <td>{e.fname}</td>
+                            <td>{e.email}</td>
+                            <td>{e.gender}</td>
+                            <td>
+                            <Dropdown>
+                              <Dropdown.Toggle variant={e.status=="active" ? "primary":"danger"} id="dropdown-basic">
+                                {e.status}
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                <Dropdown.Item>
+                                  Active
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                  Inactive
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                            </td>
+                            <td className='profile_div'>
+                              <img src={`${BASE_URL}/uploads/${e.profile}`} />
+                            </td>
+                            <td>
+                            <Dropdown>
+                              <Dropdown.Toggle className='action' id="dropdown-basic">
+                                Action
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                <Dropdown.Item>
+                                  <NavLink to={`/profile/${e._id}`} className="text-decoration-none">
+                                  <i class="fa-solid fa-eye" style={{color:'blue'}}></i>&nbsp;View
+                                  </NavLink>
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                <NavLink to={`/edit/${e._id}`} className="text-decoration-none">
+                                  <i class="fa-solid fa-pen-to-square" style={{color:'green'}}></i>&nbsp;Edit
+                                </NavLink>
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                <i class="fa-solid fa-trash" style={{color:'red'}}></i>&nbsp;Delete
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                            </td>
+                          </tr>
+                        </>
+                      )
+                    }) : "No data found"
+                  }
                 </tbody>
               </Table>
             </Card>

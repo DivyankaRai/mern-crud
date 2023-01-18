@@ -1,28 +1,46 @@
-import React,{useState,useEffect} from "react";
+import React,{useState,useEffect, useContext} from "react";
 import "./home.css";
+import Alert from 'react-bootstrap/Alert';
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 import {useNavigate} from "react-router-dom"
 import Tables from "../../Components/Table/Table";
 import Spiner from "../../Components/Spinner/Spiner";
+import { addData } from "../../Components/context/ContextProvider";
+import { usergetfunc } from "../../Services/Api";
 
 const Home = () => {
 
+  const [userdata, setuserdata] = useState([])
   const [spin, setspin] = useState(true)
   const navigate = useNavigate()
+  const {useradd, setuseradd} = useContext(addData)
 
   const adduser = () =>{
     navigate("/register")
   }
 
+  const fetchuser = async()=>{
+    const res = await usergetfunc()
+    setuserdata(res.data)
+    console.log(res.data);
+  }
+
   useEffect(() => {
+    fetchuser()
     setTimeout(() => {
       setspin(false)
     }, 1200);
   }, [])
+  
   return (
     <>
+      {
+        useradd ? <Alert variant="success" onClose={() => setuseradd("")} dismissible>
+          &nbsp;{useradd.fname.toUpperCase()}&nbsp;Successfully added
+        </Alert>:""
+      }
       <div className="container">
         <div className="main_div">
           {/* search */}
@@ -125,7 +143,7 @@ const Home = () => {
           </div>
         </div>
         {
-          spin ? <Spiner/>:<Tables/>
+          spin ? <Spiner/>:<Tables userdata={userdata} />
         }
       </div>
     </>

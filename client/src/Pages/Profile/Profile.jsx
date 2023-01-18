@@ -1,34 +1,61 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Row from 'react-bootstrap/esm/Row'
 import Card from "react-bootstrap/Card";
+import Spiner from "../../Components/Spinner/Spiner";
 import "./profile.css"
+import {useParams} from "react-router-dom"
+import { singleUserGetFunc } from '../../Services/Api';
+import { BASE_URL } from '../../Services/helper';
+import moment from "moment"
 
 const Profile = () => {
+
+  const [spin, setspin] = useState(true)
+  const [data, setdata] = useState([])
+
+  const {id} = useParams()
+  console.log(id);
+
+  const singleUser = async() =>{
+    const res = await singleUserGetFunc(id)
+    console.log(res.data);
+    setdata(res.data)
+  }
+
+  useEffect(() => {
+    singleUser()
+    setTimeout(() => {
+      setspin(false)
+    }, 1200);
+  }, [id])
+
   return (
     <>
-      <div className="container">
+      {
+        spin ? <Spiner/>: <div className="container">
         <Card className='card-profile shadow col-lg-6 mx-auto mt-5'>
           <Card.Body>
             <Row>
               <div className='col'>
                 <div className='card-profile-stats d-flex justify-content-center'>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXSTblEVkkdJh15jlAbC3FpvuzCKb1o-pQQA&usqp=CAU" alt=""/>
+                    <img src={`${BASE_URL}/uploads/${data.profile}`} alt=""/>
                 </div>
               </div>
             </Row>
             <div className='text-center'>
-                <h3>Divyanka</h3>
-                <h4><i class="fa-solid fa-envelope" style={{color:"blue"}}></i>&nbsp;:- <span>divii@gmail.com</span></h4>
-                <h5><i class="fa-solid fa-mobile" style={{color:"blue"}}></i>&nbsp;:- <span>1234567890</span></h5>
-                <h4><i class="fa-solid fa-person" style={{color:"blue"}}></i>&nbsp;:- <span>male</span></h4>
-                <h5><i class="fa-solid fa-location-pin" style={{color:"blue"}}></i>&nbsp;:- <span>location</span></h5>
-                <h5><i class="fa-solid fa-circle-dot" style={{color:"blue"}}></i>&nbsp;:- <span>active</span></h5>
-                <h5><i class="fa-solid fa-calendar-days" style={{color:"blue"}}></i>&nbsp;Date Created &nbsp;:- <span>12/09/19</span></h5>
+                <h3>{data.fname}</h3>
+                <h4><i class="fa-solid fa-envelope" style={{color:"blue"}}></i>&nbsp;:- <span>{data.email}</span></h4>
+                <h5><i class="fa-solid fa-mobile" style={{color:"blue"}}></i>&nbsp;:- <span>{data.mobile}</span></h5>
+                <h4><i class="fa-solid fa-person" style={{color:"blue"}}></i>&nbsp;:- <span>{data.gender}</span></h4>
+                <h5><i class="fa-solid fa-location-pin" style={{color:"blue"}}></i>&nbsp;:- <span>{data.location}</span></h5>
+                <h5><i class="fa-solid fa-circle-dot" style={{color:"blue"}}></i>&nbsp;:- <span>{data.status}</span></h5>
+                <h5><i class="fa-solid fa-calendar-days" style={{color:"blue"}}></i>&nbsp;Date Created &nbsp;:- <span>{moment(data.datecreated).format("DD-MM-YYYY")}</span></h5>
                 <h5><i class="fa-solid fa-calendar-days" style={{color:"blue"}}></i>&nbsp;Date Updated &nbsp;:- <span>21/09/23</span></h5>
             </div>
           </Card.Body>
         </Card>
       </div>
+      }
     </>
   )
 }

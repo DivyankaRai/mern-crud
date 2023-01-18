@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import "./register.css";
 import Card from "react-bootstrap/Card";
@@ -10,8 +10,10 @@ import "react-toastify/dist/ReactToastify.css";
 import Spiner from "../../Components/Spinner/Spiner";
 import { registerfunc } from "../../Services/Api";
 import {useNavigate} from "react-router-dom"
+import { addData } from "../../Components/context/ContextProvider";
 
 const Register = () => {
+
   const [spin, setspin] = useState(true);
   useEffect(() => {
     setTimeout(() => {
@@ -36,8 +38,8 @@ const Register = () => {
   const [status, setstatus] = useState("Active");
   const [image, setimage] = useState("");
   const [previewImg, setpreviewImg] = useState("");
-
   const navigate = useNavigate()
+  const {useradd, setuseradd} = useContext(addData)
 
   // set inputData values
   const setInputValues = (e) => {
@@ -113,6 +115,7 @@ const Register = () => {
         });
         setstatus("");
         setimage("")
+        setuseradd(res.data)
         navigate("/")
       }else{
         toast.error("Can't register the user");

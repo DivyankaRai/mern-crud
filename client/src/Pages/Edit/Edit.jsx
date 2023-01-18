@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import "./edit.css"
 import Card from "react-bootstrap/Card";
@@ -8,10 +8,15 @@ import Row from "react-bootstrap/Row";
 import {ToastContainer,toast} from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 import Spiner from "../../Components/Spinner/Spiner";
+import { useNavigate, useParams } from "react-router-dom";
+import { edituser, singleUserGetFunc } from "../../Services/Api";
+import { BASE_URL } from "../../Services/helper";
+import { editdata } from "../../Components/context/ContextProvider";
 
 
 const Edit = () => {
 
+  const nav = useNavigate()
   const [spin, setspin] = useState(true)
   useEffect(() => {
     setTimeout(() => {
@@ -34,8 +39,12 @@ const Edit = () => {
   ];
 
   const [status, setstatus] = useState("Active");
+  const [simg, setsimg] = useState("")
   const [image, setimage] = useState("");
   const [previewImg, setpreviewImg] = useState("");
+  const {useredit, setuseredit} = useContext(editdata)
+  const {id} = useParams()
+  console.log(id);
 
   // set inputData values
   const setInputValues = (e) => {
@@ -50,17 +59,29 @@ const Edit = () => {
 
   // profile image set
   const setProfile = (e) => {
-    setimage(e.target.files[0]);
+    setimage(e.target.files[0])
   };
-  console.log(image);
+  // console.log(image);
 
+  const singleUserEdit = async() =>{
+    const res = await singleUserGetFunc(id)
+    if(res.status == 200){
+      setinputData(res.data)
+      setstatus(res.data.status)
+      setsimg(res.data.profile)
+    }
+  }
+
+  console.log(inputData.gender);
   useEffect(() => {
     if (image) {
+      setsimg("")
       setpreviewImg(URL.createObjectURL(image));
     }
+    singleUserEdit(id)
   }, [image]);
 
-  const submitUserData = (e) => {
+  const submitUserData = async(e) => {
     e.preventDefault()
     const { fname, lname, email, mobile, gender, location } = inputData;
     if(fname === ""){
@@ -79,7 +100,28 @@ const Edit = () => {
       toast.error("location is required")
     }
     else{
-      toast.success("Registered successfully")
+      toast.success("Updated successfully")
+      const data = new FormData();
+      data.append("fname", fname);
+      data.append("lname", lname);
+      data.append("email", email);
+      data.append("mobile", mobile);
+      data.append("gender", gender);
+      data.append("status", status);
+      data.append("user_profile", image || simg);
+      data.append("location", location);
+
+      const config = {
+        "Content-Type": "multipart/form-data",
+      };
+
+      const res = await edituser(id, data, config);
+      // console.log(res.data);
+      if(res.status == 200){
+        setuseredit(res.data)
+        nav("/")
+      }
+
     }
   };
 
@@ -92,9 +134,9 @@ const Edit = () => {
         <div className="profile_div text-center">
           <img
             src={
-              previewImg
+              image
                 ? previewImg
-                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXSTblEVkkdJh15jlAbC3FpvuzCKb1o-pQQA&usqp=CAU"
+                : `${BASE_URL}/uploads/${simg}`
             }
             alt="img"
             width={"50"}
@@ -146,17 +188,21 @@ const Edit = () => {
                 label={`Male`}
                 name={"gender"}
                 value={"Male"}
+                checked={inputData.gender == "male"? true:false}
+                onChange={setInputValues}
               />
               <Form.Check
                 type={"radio"}
                 label={`Female`}
                 name={"gender"}
                 value={"Female"}
+                checked={inputData.gender == "female"? true:false}
+                onChange={setInputValues}
               />
             </Form.Group>
             <Form.Group className="mb-3 col-lg-6" controlId="formBasicPassword">
               <Form.Label>Select your Status</Form.Label>
-              <Select options={options} value={status} onChange={setStatusValues} />
+              <Select options={options} defaultValue={status} onChange={setStatusValues} />
             </Form.Group>
             <Form.Group className="mb-3 col-lg-6" controlId="formBasicPassword">
               <Form.Label>Select your profile</Form.Label>
