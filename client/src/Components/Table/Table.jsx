@@ -8,7 +8,7 @@ import { BASE_URL } from '../../Services/helper';
 import { NavLink } from 'react-router-dom';
 
 
-const Tables = ({userdata}) => {
+const Tables = ({userdata, deleteUser}) => {
 
   return (
     <>
@@ -73,7 +73,9 @@ const Tables = ({userdata}) => {
                                 </NavLink>
                                 </Dropdown.Item>
                                 <Dropdown.Item>
-                                <i class="fa-solid fa-trash" style={{color:'red'}}></i>&nbsp;Delete
+                                  <div onClick={()=>deleteUser(e._id)}>
+                                  <i class="fa-solid fa-trash" style={{color:'red'}}></i>&nbsp;Delete
+                                  </div>
                                 </Dropdown.Item>
                               </Dropdown.Menu>
                             </Dropdown>

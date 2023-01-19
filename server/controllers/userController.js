@@ -29,11 +29,17 @@ exports.userpost = async(req,res)=>{
 
 // register user get
 exports.userget = async(req,res)=>{
+    const search = req.query.search || ""
+    console.log(search)
+    const query = {
+        fname: {$regex:search, $options:"i"}
+    }
     try {
-        const usersdata = await users.find()
+        const usersdata = await users.find(query)
+        console.log(usersdata,"qwertyu")
         res.status(200).json(usersdata)
     } catch (error) {
-        res.status(401).json(server)
+        res.status(401).json(error)
     }
 }
 
@@ -69,5 +75,16 @@ exports.useredit = async (req,res)=>{
 
     } catch (error) {
         res.status(401).json(server)
+    }
+}
+
+// deleteuser 
+exports.userdelete = async(req,res)=>{
+    const {id} = req.params;
+    try {
+        const deleteuser = await users.findByIdAndDelete({_id:id})
+        res.status(200).json(deleteuser)
+    } catch (error) {
+        res.status(401).json(error)
     }
 }

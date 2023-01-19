@@ -7,24 +7,42 @@ import Dropdown from "react-bootstrap/Dropdown";
 import {useNavigate} from "react-router-dom"
 import Tables from "../../Components/Table/Table";
 import Spiner from "../../Components/Spinner/Spiner";
-import { addData } from "../../Components/context/ContextProvider";
-import { usergetfunc } from "../../Services/Api";
+import { addData, deletedata, editdata } from "../../Components/context/ContextProvider";
+import { deleteFunc, usergetfunc } from "../../Services/Api";
 
 const Home = () => {
 
   const [userdata, setuserdata] = useState([])
+  const [search, setsearch] = useState("")
   const [spin, setspin] = useState(true)
   const navigate = useNavigate()
   const {useradd, setuseradd} = useContext(addData)
+  const {useredit, setuseredit} = useContext(editdata)
+  const {userdelete, setuserdelete} = useContext(deletedata)
 
   const adduser = () =>{
     navigate("/register")
   }
 
+  // get user
+
   const fetchuser = async()=>{
-    const res = await usergetfunc()
+    const res = await usergetfunc(search)
     setuserdata(res.data)
     console.log(res.data);
+  }
+
+  //  delete user 
+
+  const deleteUser = async(id) =>{
+    const res = await deleteFunc(id)
+    if(res.status == 200){
+      setuserdelete(true)
+      fetchuser()
+    }
+    else{
+      alert("error")
+    }
   }
 
   useEffect(() => {
@@ -32,13 +50,25 @@ const Home = () => {
     setTimeout(() => {
       setspin(false)
     }, 1200);
-  }, [])
+  }, [search])
+
+  console.log("search",search);
   
   return (
     <>
       {
         useradd ? <Alert variant="success" onClose={() => setuseradd("")} dismissible>
           &nbsp;{useradd.fname.toUpperCase()}&nbsp;Successfully added
+        </Alert>:""
+      }
+      {
+        useredit ? <Alert variant="primary" onClose={() => setuseredit("")} dismissible>
+          &nbsp;{useredit.fname.toUpperCase()}&nbsp;Successfully updated
+        </Alert>:""
+      }
+      {
+        userdelete ? <Alert variant="primary" onClose={() => setuserdelete("")} dismissible>
+          &nbsp;User Successfully Deleted
         </Alert>:""
       }
       <div className="container">
@@ -48,8 +78,9 @@ const Home = () => {
             <div className="search col-lg-4">
               <Form className="d-flex">
                 <Form.Control
-                  type="email"
+                  type="search"
                   placeholder="search"
+                  onChange={(e)=>setsearch(e.target.value)}
                   className={"me-2"}
                 />
                 <Button variant="dark" type="submit">
@@ -143,7 +174,7 @@ const Home = () => {
           </div>
         </div>
         {
-          spin ? <Spiner/>:<Tables userdata={userdata} />
+          spin ? <Spiner/>:<Tables userdata={userdata} deleteUser={deleteUser} />
         }
       </div>
     </>
