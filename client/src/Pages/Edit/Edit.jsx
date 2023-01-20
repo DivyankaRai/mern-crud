@@ -188,7 +188,7 @@ const Edit = () => {
                 label={`Male`}
                 name={"gender"}
                 value={"Male"}
-                checked={inputData.gender == "male"? true:false}
+                checked={inputData.gender == "Male"? true:false}
                 onChange={setInputValues}
               />
               <Form.Check
@@ -196,7 +196,7 @@ const Edit = () => {
                 label={`Female`}
                 name={"gender"}
                 value={"Female"}
-                checked={inputData.gender == "female"? true:false}
+                checked={inputData.gender == "Female"? true:false}
                 onChange={setInputValues}
               />
             </Form.Group>

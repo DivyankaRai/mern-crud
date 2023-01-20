@@ -14,6 +14,13 @@ const Home = () => {
 
   const [userdata, setuserdata] = useState([])
   const [search, setsearch] = useState("")
+  const [gender, setgender] = useState("all")
+  const [status, setstatus] = useState("all")
+  const [sort, setsort] = useState("new")
+  const [page, setpage] = useState(1)
+  const [pagecount, setpageCount] = useState(4)
+
+
   const [spin, setspin] = useState(true)
   const navigate = useNavigate()
   const {useradd, setuseradd} = useContext(addData)
@@ -27,11 +34,13 @@ const Home = () => {
   // get user
 
   const fetchuser = async()=>{
-    const res = await usergetfunc(search)
-    setuserdata(res.data)
-    console.log(res.data);
+    const res = await usergetfunc(search,gender,status,sort,page)
+    setuserdata(res.data.usersdata)
+    setpageCount(res.data.Pagination.pagecount)
+    // console.log("page",);
   }
 
+  console.log(userdata.usersdata,"qwertyui");
   //  delete user 
 
   const deleteUser = async(id) =>{
@@ -45,14 +54,34 @@ const Home = () => {
     }
   }
 
+  //  pagination 
+  const handleprev = () => {
+    setpage(()=>{
+      if(page == 1){
+        return page
+      }
+      else return page - 1
+    })
+  } 
+
+  const handlenext = () => {
+    setpage(()=>{
+      if(page == pagecount){
+        return page
+      }
+      else return page + 1
+    })
+  } 
+
   useEffect(() => {
     fetchuser()
     setTimeout(() => {
       setspin(false)
     }, 1200);
-  }, [search])
+  }, [search,gender,status,sort,page])
 
-  console.log("search",search);
+  // console.log(sort);
+  // console.log("search",search);
   
   return (
     <>
@@ -109,7 +138,8 @@ const Home = () => {
                     type={"radio"}
                     label={`All`}
                     name={"gender"}
-                    value={"All"}
+                    value={"all"}
+                    onChange={(e)=>setgender(e.target.value)}
                     defaultChecked
                   />&nbsp;
                   <Form.Check
@@ -117,12 +147,14 @@ const Home = () => {
                     label={`Male`}
                     name={"gender"}
                     value={"Male"}
+                    onChange={(e)=>setgender(e.target.value)}
                   />&nbsp;
                   <Form.Check
                     type={"radio"}
                     label={`Female`}
                     name={"gender"}
                     value={"Female"}
+                    onChange={(e)=>setgender(e.target.value)}
                   />
                 </div>
               </div>
@@ -135,10 +167,10 @@ const Home = () => {
                   Sort
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item>
+                  <Dropdown.Item onClick={()=>setsort("new")}>
                     New
                   </Dropdown.Item>
-                  <Dropdown.Item>
+                  <Dropdown.Item  onClick={()=>setsort("old")}>
                     Old
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -153,20 +185,23 @@ const Home = () => {
                     type={"radio"}
                     label={`All`}
                     name={"status"}
-                    value={"All"}
+                    value={"all"}
+                    onChange={(e)=>setstatus(e.target.value)}
                     defaultChecked
                   />&nbsp;
                   <Form.Check
                     type={"radio"}
                     label={`Active`}
                     name={"status"}
-                    value={"Active"}
+                    onChange={(e)=>setstatus(e.target.value)}
+                    value={"active"}
                   />&nbsp;
                   <Form.Check
                     type={"radio"}
                     label={`Inactive`}
                     name={"status"}
-                    value={"Inactive"}
+                    value={"inactive"}
+                    onChange={(e)=>setstatus(e.target.value)}
                   />
                 </div>
               </div>
@@ -174,7 +209,15 @@ const Home = () => {
           </div>
         </div>
         {
-          spin ? <Spiner/>:<Tables userdata={userdata} deleteUser={deleteUser} />
+          spin ? <Spiner/>:<Tables
+                  userdata={userdata}
+                  deleteUser={deleteUser}
+                  handleprev={handleprev}
+                  handlenext={handlenext}
+                  page={page}
+                  pagecount={pagecount}
+                  setpage={setpage}
+                    />
         }
       </div>
     </>

@@ -6,9 +6,18 @@ import Dropdown from "react-bootstrap/Dropdown";
 import "./table.css"
 import { BASE_URL } from '../../Services/helper';
 import { NavLink } from 'react-router-dom';
+import { statusupdate } from '../../Services/Api';
+import Paginations from '../pagination/Paginations';
 
 
-const Tables = ({userdata, deleteUser}) => {
+const Tables = ({userdata, deleteUser,handleprev,handlenext,page,setpage,pagecount}) => {
+
+  // const handlechange = async(id,status)=>{
+  //   console.log(id,status);
+  //   const res = await statusupdate(id,status)
+  //   console.log(res);
+  // }
+  console.log(userdata);
 
   return (
     <>
@@ -34,7 +43,7 @@ const Tables = ({userdata, deleteUser}) => {
                       return(
                         <>
                           <tr>
-                            <td>{i+1}</td>
+                            <td>{i+1+ (page-1)*4}</td>
                             <td>{e.fname}</td>
                             <td>{e.email}</td>
                             <td>{e.gender}</td>
@@ -87,6 +96,13 @@ const Tables = ({userdata, deleteUser}) => {
                   }
                 </tbody>
               </Table>
+              <Paginations 
+              handleprev={handleprev}
+              handlenext={handlenext}
+              page={page}
+              pagecount={pagecount}
+              setpage={setpage}
+              />
             </Card>
           </div>
         </Row>

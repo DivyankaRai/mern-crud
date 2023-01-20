@@ -30,14 +30,44 @@ exports.userpost = async(req,res)=>{
 // register user get
 exports.userget = async(req,res)=>{
     const search = req.query.search || ""
-    console.log(search)
+    const gender = req.query.gender || ""
+    const status = req.query.status || ""
+    const sort = req.query.sort || ""
+    const page = req.query.page || 1
+    const itemsPerPage = 4
+
+
+    console.log(req.query)
     const query = {
         fname: {$regex:search, $options:"i"}
     }
+    if(gender != "all"){
+        query.gender = gender
+    }
+    if(status!="all"){
+        query.status=status
+    }
     try {
+
+        const skip = (page-1)*itemsPerPage
+
+        const count = await users.countDocuments(query)
+
         const usersdata = await users.find(query)
-        console.log(usersdata,"qwertyu")
-        res.status(200).json(usersdata)
+        .sort({datecreated:sort == "new" ? -1:1})
+        .limit(itemsPerPage).skip(skip)
+
+        const pagecount = Math.ceil(count/itemsPerPage)
+        console.log(usersdata)
+
+        res.status(200).json(
+            {
+            Pagination:{
+                count,pagecount
+            },
+            usersdata
+        }
+        )
     } catch (error) {
         res.status(401).json(error)
     }
@@ -87,4 +117,19 @@ exports.userdelete = async(req,res)=>{
     } catch (error) {
         res.status(401).json(error)
     }
+}
+
+
+exports.userstatusupdate = async(req,res) =>{
+    const {id} = req.params;
+    const {data} = req.body 
+
+    try {
+        const userstatusdata = await users.findByIdAndUpdate({_id:id},{status:data},{new:true})
+        console.log(userstatusdata)
+        res.status(200).json(userstatusdata)  
+    } catch (error) {
+        console.log(error)
+    }
+
 }
