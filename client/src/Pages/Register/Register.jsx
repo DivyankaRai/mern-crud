@@ -30,6 +30,7 @@ const Register = () => {
     location: "",
   });
 
+  // option
   const options = [
     { value: "active", label: "Active" },
     { value: "inactive", label: "Inactive" },

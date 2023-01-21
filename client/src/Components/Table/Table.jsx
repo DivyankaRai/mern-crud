@@ -12,11 +12,11 @@ import Paginations from '../pagination/Paginations';
 
 const Tables = ({userdata, deleteUser,handleprev,handlenext,page,setpage,pagecount}) => {
 
-  // const handlechange = async(id,status)=>{
-  //   console.log(id,status);
-  //   const res = await statusupdate(id,status)
-  //   console.log(res);
-  // }
+  const handlechange = async(id,status)=>{
+    console.log(id,status);
+    const res = await statusupdate(id,status)
+    console.log(res);
+  }
   console.log(userdata);
 
   return (

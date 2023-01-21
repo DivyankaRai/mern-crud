@@ -1,7 +1,5 @@
 import axios from "axios"
 
-import React from 'react'
-
 const commonRequest = async(methods,url,body,header) => {
   let config = {
     method: methods,
