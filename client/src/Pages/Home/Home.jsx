@@ -112,9 +112,6 @@ const Home = () => {
                   onChange={(e)=>setsearch(e.target.value)}
                   className={"me-2"}
                 />
-                <Button variant="dark" type="submit">
-                  Submit
-                </Button>
               </Form>
             </div>
             <div>
@@ -125,11 +122,6 @@ const Home = () => {
           </div>
           {/* export, gender,status,filter */}
           <div className="filter_div mt-5 d-flex justify-content-between flex-wrap">
-            <div className="export_csv">
-              <Button variant="primary" type="submit" className="mt-3">
-                Export To Csv
-              </Button>
-            </div>
             <div className="filter_gender">
               <div className="filter">
                 <h4>Filter by gender</h4>

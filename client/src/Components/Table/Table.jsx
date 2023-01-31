@@ -48,19 +48,7 @@ const Tables = ({userdata, deleteUser,handleprev,handlenext,page,setpage,pagecou
                             <td>{e.email}</td>
                             <td>{e.gender}</td>
                             <td>
-                            <Dropdown>
-                              <Dropdown.Toggle variant={e.status=="active" ? "primary":"danger"} id="dropdown-basic">
-                                {e.status}
-                              </Dropdown.Toggle>
-                              <Dropdown.Menu>
-                                <Dropdown.Item>
-                                  Active
-                                </Dropdown.Item>
-                                <Dropdown.Item>
-                                  Inactive
-                                </Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
+                            {e.status}
                             </td>
                             <td className='profile_div'>
                               <img src={`${BASE_URL}/uploads/${e.profile}`} />
